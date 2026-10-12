@@ -186,6 +186,19 @@ abstract class Borrowable {
   void giveBack();
 }
 
+//5.1
+mixin Renewable {
+  int renewals = 0;
+
+  bool renew(int limit) {
+    if (renewals >= limit) {
+      return false; // Already reached the renewal limit
+    }
+    renewals++; // Otherwise, increment and allow
+    return true;
+  }
+}
+
 //1.3
 Book mainBook() {
   return (Book(titles[u], yearOf(u), 100 + 3 * seed));
