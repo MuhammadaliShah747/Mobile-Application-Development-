@@ -58,6 +58,8 @@ void step1() {
 
 void step2() {
   print('--- Step 2 ---');
+  print('Step 2: ${mainBook().describe()}');
+  print('Step 2: ${mainMagazine().describe()}');
 }
 
 void step3() {
@@ -100,15 +102,34 @@ class LibraryItem {
   final int year;
 
   LibraryItem(this.title, this.year);
+  String describe() => '$title ($year)';
 }
 
 //1.2
 class Book extends LibraryItem {
   final int pages;
   Book(super.title, super.year, this.pages);
+  //2.2
+  @override
+  String describe() => '${super.describe()}, $pages pages';
+}
+
+//2.3
+class Magazine extends LibraryItem {
+  final int issue;
+
+  Magazine(super.title, super.year, this.issue);
+  @override
+  String describe() => '${super.describe()}, issues $issue';
 }
 
 //1.3
 Book mainBook() {
   return (Book(titles[u], yearOf(u), 100 + 3 * seed));
+}
+
+//2.3
+Magazine mainMagazine() {
+  var i = (u + 1) % 10;
+  return (Magazine(titles[i], yearOf(i), 1 + (t + u) % 12));
 }
