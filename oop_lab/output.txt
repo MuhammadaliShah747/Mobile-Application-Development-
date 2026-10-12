@@ -1,0 +1,43 @@
+Seed: 23 (t=2, u=3)
+--- Step 1 ---
+Step 1: Operating Systems (2003), 169 pages
+Step 1: stored as LibraryItem: Operating Systems
+Step 1: runtimeType Book
+--- Step 2 ---
+Step 2: Operating Systems (2003)
+Step 2: Mobile Design (2005), issues 6
+Step 3: Book late fee for 8 days = 56
+Step 3: Magazine late fee for 8 days = 24
+Step 3: Dvd late fee for 8 days = 112
+--- Step 4 ---
+Step 4: available? true
+Step 4: after borrow? false
+Step 4: after return? true
+Step 4: Book borrowable? true
+Step 4: Magazine borrowable? false
+Step 4: Dvd borrowable? false
+--- Step 5 ---
+Step 5: renewed 3 of 5 attempts (limit 3)
+Step 5: renew once more? false
+Step 5: dvd can renew too? true
+--- Step 6 ---
+Step 6: member type guest (index 2)
+Step 6: max loans = 1
+Step 6: book fee 56 -> 56 after discount
+--- Step 7 ---
+Step 7: Rs 56
+Step 7: initials of "Operating Systems" = OS
+Step 7: shelf fee for 8 days = Rs 192
+--- Step 8 ---
+Step 8: Fine (56) + Fine (24) = Fine (80)
+Step 8: first bigger? true
+Step 8: equal copies? true
+--- Step 9 ---
+Step 9: items created 12
+Step 9: capped fee 91 (cap 170)
+Step 9: const copies identical? true
+Step 9: new copies identical? false
+--- Step 10 ---
+Step 10: 6 items, 2 borrowable, 4 renewable
+Step 10: S23 (guest) owes Fine (384)
+Step 10: over the cap? true
