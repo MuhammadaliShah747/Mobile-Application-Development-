@@ -91,18 +91,53 @@ void step4() {
 
 void step5() {
   print('--- Step 5 ---');
+  var book = mainBook();
+  int ok = 0;
+  for (int c = 0; c < renewAttempts; c++) {
+    if (book.renew(renewLimit)) {
+      ok++;
+    }
+  }
+
+  print('Step 5: renewed $ok of $renewAttempts attempts (limit $renewLimit)');
+  print('Step 5: renew once more? ${book.renew(renewLimit)}');
+  print('Step 5: dvd can renew too? ${mainDvd().renew(1)}');
 }
 
 void step6() {
   print('--- Step 6 ---');
+  MemberType type = MemberType.values[seed % 3];
+  int fee = mainBook().lateFee(daysLate);
+
+  print('Step 6: member type ${type.name} (index ${type.index})');
+  print('Step 6: max loans = ${type.maxLoans}');
+  print('Step 6: book fee $fee -> ${type.applyDiscount(fee)} after discount');
 }
 
 void step7() {
   print('--- Step 7 ---');
+  MemberType type = MemberType.values[seed % 3];
+  int fee = mainBook().lateFee(daysLate);
+  int discountedFee = type.applyDiscount(fee);
+
+  print('Step 7: ${discountedFee.rs}');
+  print('Step 7: initials of "${titles[u]}" = ${titles[u].initials}');
+
+  List<LibraryItem> shelf = [mainBook(), mainMagazine(), mainDvd()];
+  print(
+    'Step 7: shelf fee for $daysLate days = ${shelf.totalLateFee(daysLate).rs}',
+  );
 }
 
 void step8() {
   print('--- Step 8 ---');
+  Fine f1 = Fine(mainBook().lateFee(daysLate));
+  Fine f2 = Fine(mainMagazine().lateFee(daysLate));
+
+  print('Step 8: $f1 + $f2 = ${f1 + f2}');
+  print('Step 8: first bigger? ${f1 > f2}');
+  print('Step 8: equal copies? ${f1 == Fine(f1.amount)}');
+  print('Step 8: set size = ${{f1, Fine(f1.amount), f2}.length}');
 }
 
 void step9() {
@@ -127,7 +162,7 @@ abstract class LibraryItem {
 }
 
 //3.2
-class Dvd extends LibraryItem {
+class Dvd extends LibraryItem with Renewable {
   final int minutes;
   Dvd(super.title, super.year, this.minutes);
   @override
@@ -144,7 +179,7 @@ Dvd mainDvd() {
 
 //1.2
 //4.2
-class Book extends LibraryItem implements Borrowable {
+class Book extends LibraryItem with Renewable implements Borrowable {
   final int pages;
   bool _out = false;
 
@@ -192,9 +227,9 @@ mixin Renewable {
 
   bool renew(int limit) {
     if (renewals >= limit) {
-      return false; // Already reached the renewal limit
+      return false;
     }
-    renewals++; // Otherwise, increment and allow
+    renewals++;
     return true;
   }
 }
@@ -208,4 +243,58 @@ Book mainBook() {
 Magazine mainMagazine() {
   var i = (u + 1) % 10;
   return (Magazine(titles[i], yearOf(i), 1 + (t + u) % 12));
+}
+
+//6.1
+enum MemberType {
+  student(3, 50),
+  faculty(10, 20),
+  guest(1, 0);
+
+  final int maxLoans;
+  final int discountPercent;
+
+  const MemberType(this.maxLoans, this.discountPercent);
+
+  int applyDiscount(int fee) {
+    return fee - (fee * discountPercent ~/ 100);
+  }
+}
+
+// 7.1
+extension MoneyText on int {
+  String get rs => 'Rs $this';
+}
+
+extension Initials on String {
+  String get initials => split(' ').map((w) => w.isNotEmpty ? w[0] : '').join();
+}
+
+extension ShelfMath on List<LibraryItem> {
+  int totalLateFee(int days) =>
+      fold(0, (sum, item) => sum + item.lateFee(days));
+}
+
+// 8.1
+class Fine {
+  final int amount;
+
+  const Fine(this.amount);
+
+  Fine operator +(Fine o) => Fine(amount + o.amount);
+
+  bool operator >(Fine o) => amount > o.amount;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Fine &&
+          runtimeType == other.runtimeType &&
+          amount == other.amount;
+
+  @override
+  int get hashCode => amount.hashCode;
+
+  @override
+  String toString() => 'Fine ($amount)';
 }
