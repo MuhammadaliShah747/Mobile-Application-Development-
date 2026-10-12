@@ -63,7 +63,15 @@ void step2() {
 }
 
 void step3() {
-  print('--- Step 3 ---');
+  Book b = mainBook();
+  Magazine m = mainMagazine();
+  Dvd d = mainDvd();
+
+  print('Step 3: Book late fee for $daysLate days = ${b.lateFee(daysLate)}');
+  print(
+    'Step 3: Magazine late fee for $daysLate days = ${m.lateFee(daysLate)}',
+  );
+  print('Step 3: Dvd late fee for $daysLate days = ${d.lateFee(daysLate)}');
 }
 
 void step4() {
@@ -97,12 +105,30 @@ void step10() {
 //classes
 
 //1.1
-class LibraryItem {
+abstract class LibraryItem {
   final String title;
   final int year;
 
   LibraryItem(this.title, this.year);
   String describe() => '$title ($year)';
+  //3.1
+  int lateFee(int days);
+}
+
+//3.2
+class Dvd extends LibraryItem {
+  final int minutes;
+  Dvd(super.title, super.year, this.minutes);
+  @override
+  String describe() => '${super.describe()}, $minutes min';
+  int lateFee(int days) {
+    return (days * feePerDay * 2);
+  }
+}
+
+Dvd mainDvd() {
+  var i = (u + 2) % 10;
+  return (Dvd(titles[i], yearOf(i), 90 + seed % 40));
 }
 
 //1.2
@@ -112,6 +138,10 @@ class Book extends LibraryItem {
   //2.2
   @override
   String describe() => '${super.describe()}, $pages pages';
+
+  int lateFee(int days) {
+    return (days * feePerDay);
+  }
 }
 
 //2.3
@@ -121,6 +151,9 @@ class Magazine extends LibraryItem {
   Magazine(super.title, super.year, this.issue);
   @override
   String describe() => '${super.describe()}, issues $issue';
+  int lateFee(int days) {
+    return (days * (feePerDay ~/ 2));
+  }
 }
 
 //1.3
