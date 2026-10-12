@@ -76,6 +76,17 @@ void step3() {
 
 void step4() {
   print('--- Step 4 ---');
+  Book book = mainBook();
+  print('Step 4: available? ${book.isAvailable}');
+  book.borrow();
+  print('Step 4: after borrow? ${book.isAvailable}');
+  book.giveBack();
+  print('Step 4: after return? ${book.isAvailable}');
+
+  List<LibraryItem> items = [book, mainMagazine(), mainDvd()];
+  for (var item in items) {
+    print('Step 4: ${item.runtimeType} borrowable? ${item is Borrowable}');
+  }
 }
 
 void step5() {
@@ -132,15 +143,27 @@ Dvd mainDvd() {
 }
 
 //1.2
-class Book extends LibraryItem {
+//4.2
+class Book extends LibraryItem implements Borrowable {
   final int pages;
-  Book(super.title, super.year, this.pages);
-  //2.2
-  @override
-  String describe() => '${super.describe()}, $pages pages';
+  bool _out = false;
 
-  int lateFee(int days) {
-    return (days * feePerDay);
+  Book(super.title, super.year, this.pages);
+
+  @override
+  int lateFee(int days) => days * feePerDay;
+
+  @override
+  bool get isAvailable => !_out;
+
+  @override
+  void borrow() {
+    _out = true;
+  }
+
+  @override
+  void giveBack() {
+    _out = false;
   }
 }
 
@@ -154,6 +177,13 @@ class Magazine extends LibraryItem {
   int lateFee(int days) {
     return (days * (feePerDay ~/ 2));
   }
+}
+
+//4.1
+abstract class Borrowable {
+  bool get isAvailable;
+  void borrow();
+  void giveBack();
 }
 
 //1.3
